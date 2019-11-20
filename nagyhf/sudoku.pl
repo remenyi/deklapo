@@ -15,9 +15,13 @@
 sudoku(s(N, M), SSol) :-
 	Size is N*N,
 	length(Rows, Size),
-	maplist(same_length(Rows), Rows),
+	maplist(neo_length(Size), Rows),
 	maplist(fill(Size), Rows),
 	SSol = Rows,
+	%%maplist(all_distinct, SSol),
+	transpose(SSol, SSolT),
+	maplist(all_distinct, SSolT),
+	celldistinct(SSol, N),
 	
 	parity(M, Mp),
 	numbers(M, Mn),
@@ -26,12 +30,10 @@ sudoku(s(N, M), SSol) :-
 	maplist(paritycheck, Mp, SSol),
 	maplist(numbercheck, Mn, SSol),
 	maplist(wdirectioncheck, Mw, SSol),
-	scheck(Ms, SSol),
+	scheck(Ms, SSol).
 
-	maplist(all_distinct, SSol),
-	transpose(SSol, SSolT),
-	maplist(all_distinct, SSolT),
-	celldistinct(SSol, N).
+neo_length(N, L) :-
+	length(L, N).
 
 all_distinct([]).
 all_distinct([H|T]) :-
