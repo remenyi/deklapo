@@ -25,7 +25,7 @@ ertekek(s(K, M), R-C, Vals) :-
 	submtx(M, K, R, C, SM),
 
 	N is K*K,                  %% Kezdeti számsorozat előállítása
-	iota(Seq, 1, N, 1),
+	iota(Seq, 0, N, 1),
 	
 	szamfilter(Cell, Seq, Seq1),  %% Szűrés a cellában lévő megszorításokra
 	evenfilter(Cell, Seq1, Seq2),
