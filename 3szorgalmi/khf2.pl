@@ -13,9 +13,8 @@
 %    SSpec az sspec típusspecifikációnak megfelelő Sudoku-feladvány,
 %    R_C az adott feladvány egy mezőjének (sor-oszlop formában megadott) koordinátája,
 %    Vals list(int) típusú mezőértéklista, az SSpec feladvány R_C koordinátájú
-%         mezőjében megengedett értékek listája.
+%    mezőjében megengedett értékek
 
-:- use_module(library(clpfd)).
 :- use_module(library(lists)).
 
 ertekek(s(K, M), R-C, Vals) :-
@@ -52,8 +51,8 @@ submtx(M, K, R, C, Out) :-
 	transpose(Rows, X),
 	darab(X, N_C, K, Cols),
 	transpose(Cols, Y),
-	Rrel #= mod(R-1, K)+1,
-	Crel #= mod(C-1, K)+1,
+	Rrel is mod(R-1, K)+1,
+	Crel is mod(C-1, K)+1,
 	nth1(Rrel, Y, Y1),
 	nth1(Crel, Y1, D),
 	delete(Y1, D, YD),
@@ -142,26 +141,23 @@ szam(v(Sz), Sz) :-
 paros(X) :-
 	X = e.
 paros(X, O) :-
-	0 #= mod(X, 2),
+	0 is X mod 2,
 	X = O.
 
 %% paratlan(X): Igaz, ha X páratlan
 paratlan(X) :-
 	X = o.
 paratlan(X, O) :-
-	1 #= mod(X, 2),
+	1 is X mod 2,
 	X = O.
 
 %% iota(L, F, T, V): Igaz, ha L lista F-el kezdődik és V értékkel
 %% növekszik T-ig
+iota([], F, F, _).
 iota(L, F, T, V) :-
-	(F =:= T ->
-	    L = [F]
-	;F > T ->
-	    L = []
-	;   append(X, [T], L),
-	    M is T-V,
-	    iota(X, F, M, V)).
+	append(X, [T], L),
+	M is T-V,
+	iota(X, F, M, V),!.
 
 %% member(L, E, O): Igaz, ha E eleme L-nek, és L megegyezik O-val
 member(L, E, O) :-
