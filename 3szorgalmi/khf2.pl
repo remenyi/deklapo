@@ -35,10 +35,10 @@ ertekek(s(K, M), R-C, Vals) :-
 	deletelist(Seq3, RowNum, Seq4),
 	szamlista(Col, ColNum, R),
 	deletelist(Seq4, ColNum, Seq5),
-	szamlista(SM, SMNum, 0),
+	szamlista(SM, SMNum, x),
 	deletelist(Seq5, SMNum, Seq6),
 	
-	Vals = Seq6.
+	Vals = Seq6,!.
 
 %% submtx(M, K, R, C, Out): Igaz, ha M mátrix K feldarabolásához,
 %% R. sorához és C. oszlopához létezik olyan Out sorozat, hogy Out
@@ -90,19 +90,23 @@ deletelist(L, [H|T], Out) :-
 
 %% szamlista(Lin, Lout, N): Igaz, ha Lin-ben szereplő számok megvannak
 %% Lout-ban, kivéve az Lin N. helyén lévő számot
-szamlista([], Lout, _) :-
-	Lout = [].
-szamlista([H|T], Lout, N) :-
-	Nminus is N-1,
-	(Nminus =:= 0 ->
-	    append([], X, Lout),
-	    szamlista(T, X, Nminus)
-	;   convlist(szam, H, Out),
-	    append(Out, X, Lout),
-	    szamlista(T, X, Nminus)).
+szamlista([], [], _).
+szamlista(L, Lout, x) :-
+	convlist(szamok, L, Lraw),
+	flatten(Lraw, Lout).
+szamlista(L, Lout, N) :-
+	Nto is N-1,
+	length(L, Ln),
+	Nfrom is Ln-N,
+	prefix_length(L, Prefix, Nto),
+	suffix_length(L, Postfix, Nfrom),
+	append(Prefix, Postfix, List),
+	convlist(szamok, List, Lraw),
+	flatten(Lraw, Lout).
 
-
-
+szamok(Cell, N) :-
+	(somechk(szam, Cell) ->
+	    convlist(szam, Cell, N)).
 
 %% szamfilter(Cell, Lin, Lout): Igaz, ha Lout Lin elemeit tartalmazza
 %% abban az esetben ha Cell-ben nincs szám. Ellenkező esetben Cell-ben
